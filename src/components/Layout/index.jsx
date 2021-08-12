@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
 function Layout({ layoutOption, children }) {
     const classes = useStyles();
     const { pending, fail } = useAuthUser();
-    const { withHeader } = layoutOption;
+    const { withHeader, title } = layoutOption;
 
     useEffect(() => {
         if (fail) {
@@ -32,7 +32,7 @@ function Layout({ layoutOption, children }) {
 
     return (
         <div className={classes.root}>
-            {withHeader && <Header />}
+            {withHeader && <Header title={title} />}
             <Container component="main" className={classes.container}>
                 {children}
                 <FullScreenLoading open={pending} />

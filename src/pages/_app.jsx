@@ -4,6 +4,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../context/theme';
 import Layout from '../components/Layout';
 import '../../styles/globals.css';
+import ContextProvider from '../context/ContextProvider';
 
 function MyApp({ Component, pageProps }) {
     const { layoutOption = {} } = pageProps;
@@ -15,10 +16,12 @@ function MyApp({ Component, pageProps }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <Layout layoutOption={layoutOption}>
-                    <Component {...pageProps} />
-                </Layout>
+                <ContextProvider>
+                    <CssBaseline />
+                    <Layout layoutOption={layoutOption}>
+                        <Component {...pageProps} />
+                    </Layout>
+                </ContextProvider>
             </ThemeProvider>
         </>
     );

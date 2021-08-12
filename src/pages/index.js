@@ -7,7 +7,10 @@ function Home() {
 export async function getServerSideProps() {
     return {
         props: {
-            ...formatLayoutOption({ withHeader: true }),
+            ...formatLayoutOption({
+                withHeader: true,
+                title: '크린하우스 주소록',
+            }),
         },
     };
 }
