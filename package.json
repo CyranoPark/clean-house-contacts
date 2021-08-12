@@ -1,0 +1,31 @@
+{
+  "name": "clean-house-message",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server/server.js",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "classnames": "^2.3.1",
+    "express": "^4.17.1",
+    "firebase": "^8.9.0",
+    "next": "11.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-next": "^11.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.2.1"
+  }
+}
