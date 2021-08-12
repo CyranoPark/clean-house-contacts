@@ -5,6 +5,7 @@ import { useAuthUser } from '../../hooks/useAuthUser';
 import FullScreenLoading from '../Loading/FullScreen';
 import { useEffect } from 'react';
 import Header from './Header';
+import classNames from 'classnames';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -16,6 +17,9 @@ const useStyles = makeStyles(() => ({
         width: '100%',
         maxWidth: 1024,
         minHeight: '100%',
+    },
+    withHeader: {
+        paddingTop: 80,
     },
 }));
 
@@ -33,7 +37,13 @@ function Layout({ layoutOption, children }) {
     return (
         <div className={classes.root}>
             {withHeader && <Header title={title} />}
-            <Container component="main" className={classes.container}>
+            <Container
+                component="main"
+                className={classNames(
+                    classes.container,
+                    withHeader && classes.withHeader,
+                )}
+            >
                 {children}
                 <FullScreenLoading open={pending} />
             </Container>

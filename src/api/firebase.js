@@ -30,8 +30,58 @@ export const authUser = (callback) => {
     });
 };
 
-export const firebasePostData = () => {
-    firebase.database().ref('/contacts').set({
-        test: 'name1212',
+export const getContacts = () => {
+    const dbRef = firebase.database().ref();
+    dbRef
+        .child('contacts')
+        .get()
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+            } else {
+                console.log('No data available');
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+};
+
+export const postContacts = () => {
+    [].forEach((item) => {
+        const postListRef = firebase.database().ref('contacts');
+        const newPostRef = postListRef.push();
+        newPostRef.set({ ...item, group: '' });
     });
+};
+
+export const postGroups = () => {
+    const sample = {
+        name: '대주아파트',
+        active: false,
+    };
+    const postListRef = firebase.database().ref('groups');
+    const newPostRef = postListRef.push();
+    newPostRef.set(sample);
+};
+
+export const postMessageTemplate = () => {
+    const sample = {
+        content: '안녕하세요',
+        active: false,
+    };
+    const postListRef = firebase.database().ref('templates');
+    const newPostRef = postListRef.push();
+    newPostRef.set(sample);
+};
+
+export const postMessageHistory = () => {
+    const sample = {
+        target: '',
+        content: '',
+        created_at: new Date().toISOString(),
+    };
+    const postListRef = firebase.database().ref('message_history');
+    const newPostRef = postListRef.push();
+    newPostRef.set(sample);
 };
