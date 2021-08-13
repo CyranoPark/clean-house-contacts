@@ -2,6 +2,8 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 
+const SIZE = 20;
+
 export const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_APP_KEY,
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -30,21 +32,50 @@ export const authUser = (callback) => {
     });
 };
 
-export const getContacts = () => {
-    const dbRef = firebase.database().ref();
-    dbRef
-        .child('contacts')
-        .get()
-        .then((snapshot) => {
-            if (snapshot.exists()) {
-                console.log(snapshot.val());
-            } else {
-                console.log('No data available');
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+export const getContactByMobile = (mobile) => {
+    const dbRef = firebase.database().ref('contacts');
+    dbRef.orderByChild('mobile').equalTo(mobile).limitToFirst(10);
+    // .startAt(mobile).endAt(mobile).limitToFirst(10);
+    return new Promise((resolve, reject) => {
+        dbRef
+            .get()
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+                    resolve(snapshot.val());
+                } else {
+                    console.log('No data available');
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+};
+
+export const getContacts = (page) => {
+    const start = page * SIZE;
+    const end = start + SIZE - 1;
+    const dbRef = firebase
+        .database()
+        .ref('contacts')
+        .orderByChild('id')
+        .startAt(start)
+        .endAt(end);
+    return new Promise((resolve, reject) => {
+        dbRef
+            .get()
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    resolve(snapshot.val());
+                } else {
+                    console.log('No data available');
+                }
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
 };
 
 export const postContacts = () => {

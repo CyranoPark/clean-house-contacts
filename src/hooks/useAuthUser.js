@@ -23,7 +23,6 @@ export function useAuthUser() {
         if (user) return;
 
         const clearId = setTimeout(() => {
-            console.log('timeout');
             setAuthState({ pending: false, isSignedIn: false, fail: true });
         }, TIME_OUT);
 
