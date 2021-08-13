@@ -1,6 +1,8 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/firestore';
 import 'firebase/database';
+import data from './data.json';
 
 const SIZE = 20;
 
@@ -54,65 +56,38 @@ export const getContactByMobile = (mobile) => {
 };
 
 export const getContacts = (page) => {
+    const db = firebase.firestore();
     const start = page * SIZE;
-    const end = start + SIZE - 1;
-    const dbRef = firebase
-        .database()
-        .ref('contacts')
-        .orderByChild('id')
+
+    const ref = db
+        .collection('contacts')
+        .orderBy('created_at')
         .startAt(start)
-        .endAt(end);
-    return new Promise((resolve, reject) => {
-        dbRef
-            .get()
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    resolve(snapshot.val());
-                } else {
-                    console.log('No data available');
-                }
-            })
-            .catch((error) => {
-                reject(error);
-            });
+        .limit(SIZE);
+
+    return ref.get().then((documentSnapshots) => {
+        return documentSnapshots.docs.map((doc) => doc.data());
     });
 };
 
-export const postContacts = () => {
-    [].forEach((item) => {
-        const postListRef = firebase.database().ref('contacts');
-        const newPostRef = postListRef.push();
-        newPostRef.set({ ...item, group: '' });
+export const getContactsByMobile = (page, mobile = '') => {
+    const db = firebase.firestore();
+    const start = page * SIZE;
+
+    let ref;
+
+    // .startAt(mobile)
+    // .endAt(mobile + '\uf8ff')
+    if (mobile) {
+        ref = db
+            .collection('contacts')
+            .where('mobile', '==', mobile)
+            .limit(SIZE);
+    } else {
+        ref = db.collection('contacts').orderBy('created_at').limit(SIZE);
+    }
+
+    return ref.get().then((documentSnapshots) => {
+        return documentSnapshots.docs.map((doc) => doc.data());
     });
-};
-
-export const postGroups = () => {
-    const sample = {
-        name: '대주아파트',
-        active: false,
-    };
-    const postListRef = firebase.database().ref('groups');
-    const newPostRef = postListRef.push();
-    newPostRef.set(sample);
-};
-
-export const postMessageTemplate = () => {
-    const sample = {
-        content: '안녕하세요',
-        active: false,
-    };
-    const postListRef = firebase.database().ref('templates');
-    const newPostRef = postListRef.push();
-    newPostRef.set(sample);
-};
-
-export const postMessageHistory = () => {
-    const sample = {
-        target: '',
-        content: '',
-        created_at: new Date().toISOString(),
-    };
-    const postListRef = firebase.database().ref('message_history');
-    const newPostRef = postListRef.push();
-    newPostRef.set(sample);
 };

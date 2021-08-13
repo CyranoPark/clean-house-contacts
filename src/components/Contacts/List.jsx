@@ -4,28 +4,45 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Title from './Title';
+import Button from '@material-ui/core/Button';
+import React from 'react';
 
-function ContactsList(contacts) {
+const useStyles = makeStyles((theme) => ({
+    cell: {
+        fontSize: '1.1rem',
+    },
+}));
+
+const Cell = ({ children }) => (
+    <TableCell className={useStyles().cell} size="medium" align="center">
+        {children}
+    </TableCell>
+);
+
+function ContactsList({ contacts }) {
     return (
-        <Table size="small">
+        <Table size="medium">
             <TableHead>
                 <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Ship To</TableCell>
-                    <TableCell>Payment Method</TableCell>
-                    <TableCell align="right">Sale Amount</TableCell>
+                    <Cell>이름</Cell>
+                    <Cell>전화번호</Cell>
+                    <Cell>그룹</Cell>
+                    <Cell>기타</Cell>
+                    <Cell></Cell>
                 </TableRow>
             </TableHead>
             <TableBody>
-                {rows.map((row) => (
-                    <TableRow key={row.id}>
-                        <TableCell>{row.date}</TableCell>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell>{row.shipTo}</TableCell>
-                        <TableCell>{row.paymentMethod}</TableCell>
-                        <TableCell align="right">{row.amount}</TableCell>
+                {contacts.map((contact) => (
+                    <TableRow key={contact.id}>
+                        <Cell>{contact.name}</Cell>
+                        <Cell>{contact.mobile}</Cell>
+                        <Cell>{contact.group}</Cell>
+                        <Cell>{contact.memo}</Cell>
+                        <Cell>
+                            <Button size="large" color="primary">
+                                문자발송
+                            </Button>
+                        </Cell>
                     </TableRow>
                 ))}
             </TableBody>

@@ -2,17 +2,32 @@ import { useState, useEffect, useContext } from 'react';
 import { formatLayoutOption } from '../services/LayoutService';
 import { PageContext } from '../context/PageContext';
 import { ContactsContext } from '../context/ContactsContext';
-import { getContactByMobile } from '../api/firebase';
+import { getContactByMobile, postContacts } from '../api/firebase';
+import ContactsList from '../components/Contacts/List';
+import { Container } from '@material-ui/core';
+import SearchBar from '../components/Contacts/SearchBar';
 
 function Home() {
-    const { getContactsByPage, contacts } = useContext(ContactsContext);
-    console.log(contacts);
+    const { getContactsByPage, contacts, page } = useContext(ContactsContext);
+
+    const loadMore = () => {
+        getContactsByPage(page === null ? 0 : page + 1);
+    };
+    const searchKeyword = (v) => {
+        getContactsByPage(page === null ? 0 : page + 1, v);
+        console.log(v);
+    };
+
     useEffect(() => {
-        getContactsByPage(0);
-        getContactByMobile('1009');
+        loadMore();
     }, []);
 
-    return <div></div>;
+    return (
+        <Container>
+            <SearchBar handleSearch={searchKeyword} />
+            <ContactsList contacts={contacts} />
+        </Container>
+    );
 }
 
 export async function getServerSideProps() {

@@ -5,7 +5,6 @@ import theme from '../context/theme';
 import Layout from '../components/Layout';
 import '../../styles/globals.css';
 import ContextProvider from '../context/ContextProvider';
-import React from 'react';
 
 function MyApp({ Component, pageProps }) {
     const { layoutOption = {} } = pageProps;
