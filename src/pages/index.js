@@ -67,12 +67,12 @@ function Home() {
             <button
                 onClick={async () => {
                     try {
-                        const sign = await axios.get('/api/message', {
+                        const { data } = await axios.get('/api/message', {
                             params: {
                                 requestId: '22a406dad99d4fa19d0a889ff051acce',
                             },
                         });
-                        console.log(sign);
+                        console.log(data);
                     } catch (e) {
                         console.log(e);
                     }
