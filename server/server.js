@@ -1,5 +1,6 @@
 const next = require('next');
 const express = require('express');
+const smsRouter = require('./router/sms');
 
 const env = process.env.NODE_ENV || 'development';
 const dev = env !== 'production';
@@ -16,6 +17,7 @@ app.prepare()
         server.use(express.json());
         server.use(express.urlencoded({ extended: false }));
 
+        server.use('/sms', smsRouter);
         server.get('*', (req, res) => handle(req, res));
 
         server.listen(port, (err) => {

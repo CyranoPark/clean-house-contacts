@@ -6,6 +6,7 @@ import {
     postMessageTemplate,
     postMessageHistory,
 } from '../api/firebase';
+import { smsApi } from '../api/sms';
 
 function Home() {
     return (
@@ -19,6 +20,32 @@ function Home() {
                 메시지 히스토리 등록
             </button>
             <button onClick={() => getContacts()}>가져오기</button>
+            <button
+                onClick={async () => {
+                    try {
+                        const sign = await smsApi(
+                            // `/services/${process.env.NEXT_PUBLIC_SMS_SERVICE_ID}/messages`,
+                            '/message',
+                            'GET',
+                            {
+                                type: 'SMS',
+                                from: '010-2064-0631',
+                                content: 'test',
+                                messages: [
+                                    {
+                                        to: '010-5051-0631',
+                                    },
+                                ],
+                            },
+                        );
+                        console.log(sign);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                }}
+            >
+                signature test
+            </button>
         </div>
     );
 }

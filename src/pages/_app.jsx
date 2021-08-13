@@ -5,6 +5,7 @@ import theme from '../context/theme';
 import Layout from '../components/Layout';
 import '../../styles/globals.css';
 import ContextProvider from '../context/ContextProvider';
+import React from 'react';
 
 function MyApp({ Component, pageProps }) {
     const { layoutOption = {} } = pageProps;
@@ -12,6 +13,14 @@ function MyApp({ Component, pageProps }) {
     return (
         <>
             <Head>
+                <script
+                    type="text/javascript"
+                    src="/lib/CryptoJS/rollups/hmac-sha256.js"
+                ></script>
+                <script
+                    type="text/javascript"
+                    src="/lib/CryptoJS/components/enc-base64.js"
+                ></script>
                 <title>크린하우스 주소록 시스템</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
