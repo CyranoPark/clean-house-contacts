@@ -13,14 +13,6 @@ function MyApp({ Component, pageProps }) {
     return (
         <>
             <Head>
-                <script
-                    type="text/javascript"
-                    src="/lib/CryptoJS/rollups/hmac-sha256.js"
-                ></script>
-                <script
-                    type="text/javascript"
-                    src="/lib/CryptoJS/components/enc-base64.js"
-                ></script>
                 <title>크린하우스 주소록 시스템</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
