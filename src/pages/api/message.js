@@ -1,8 +1,6 @@
-const express = require('express');
+const app = require('express')();
 const axios = require('axios');
 const CryptoJS = require('crypto-js');
-
-const router = express.Router();
 
 function makeSignature(url, method, timestamp) {
     const accessKey = process.env.SMS_ACCESS_KEY; // access key id (from portal or Sub Account)
@@ -25,6 +23,7 @@ function makeSignature(url, method, timestamp) {
 }
 
 const getMessageHistory = async (req, res, next) => {
+    console.log(req.query);
     const { requestId } = req.query;
 
     const date = Date.now().toString();
@@ -101,8 +100,7 @@ const smsApi = async (req, res, next) => {
         next(e);
     }
 };
+app.post('/api/message', smsApi);
+app.get('/api/message', getMessageHistory);
 
-router.post('/message', smsApi);
-router.get('/message', getMessageHistory);
-
-module.exports = router;
+module.exports = app;

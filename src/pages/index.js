@@ -15,6 +15,15 @@ function Home() {
 
     return (
         <div>
+            <button
+                onClick={() => {
+                    axios.get('/api').then((res) => {
+                        console.log(res.data);
+                    });
+                }}
+            >
+                test
+            </button>
             <button onClick={() => postContacts()}>등록</button>
             <button onClick={() => postGroups()}>그룹등록</button>
             <button onClick={() => postMessageTemplate()}>
@@ -40,7 +49,7 @@ function Home() {
                 <button
                     onClick={async () => {
                         try {
-                            const sign = await axios.post('/sms/message', {
+                            const sign = await axios.post('/api/message', {
                                 from,
                                 to,
                                 content: 'teeest',
@@ -58,7 +67,7 @@ function Home() {
             <button
                 onClick={async () => {
                     try {
-                        const sign = await axios.get('/sms/message', {
+                        const sign = await axios.get('/api/message', {
                             params: {
                                 requestId: '22a406dad99d4fa19d0a889ff051acce',
                             },
