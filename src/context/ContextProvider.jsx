@@ -6,9 +6,9 @@ import PopupProvider from './PopupContext';
 function ContextProvider({ children }) {
     return (
         <PageProvider>
-            <PopupProvider>
-                <ContactsProvider>{children}</ContactsProvider>
-            </PopupProvider>
+            <ContactsProvider>
+                <PopupProvider>{children}</PopupProvider>
+            </ContactsProvider>
         </PageProvider>
     );
 }

@@ -69,14 +69,11 @@ export const getContacts = (page) => {
     });
 };
 
-export const getContactsByMobile = (page, mobile = '') => {
+export const getContactsByMobile = (mobile = '') => {
     const db = firebase.firestore();
-    const start = page * SIZE;
 
     let ref;
 
-    // .startAt(mobile)
-    // .endAt(mobile + '\uf8ff')
     if (mobile) {
         ref = db
             .collection('contacts')
@@ -87,6 +84,27 @@ export const getContactsByMobile = (page, mobile = '') => {
     }
 
     return ref.get().then((documentSnapshots) => {
-        return documentSnapshots.docs.map((doc) => doc.data());
+        return documentSnapshots.docs.map((doc) => {
+            return {
+                ...doc.data(),
+                id: doc.id,
+            };
+        });
+    });
+};
+
+export const postContact = (contact) => {
+    const db = firebase.firestore();
+    return new Promise((res, rej) => {
+        db.collection('contacts')
+            .add(contact)
+            .then((docRef) => {
+                docRef.get().then((doc) => {
+                    res(doc.data());
+                });
+            })
+            .catch((error) => {
+                rej(error);
+            });
     });
 };

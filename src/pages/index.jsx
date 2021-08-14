@@ -1,27 +1,21 @@
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { formatLayoutOption } from '../services/LayoutService';
-import { PageContext } from '../context/PageContext';
 import { ContactsContext } from '../context/ContactsContext';
-import { getContactByMobile, postContacts } from '../api/firebase';
 import ContactsList from '../components/Contacts/List';
 import { Container } from '@material-ui/core';
 import SearchBar from '../components/Contacts/SearchBar';
 import { PopupContext } from '../context/PopupContext';
 
 function Home() {
-    const { getContactsByPage, contacts, page } = useContext(ContactsContext);
-    const { open, close } = useContext(PopupContext);
+    const { getContactsByPage, contacts } = useContext(ContactsContext);
+    const { open } = useContext(PopupContext);
 
-    const loadMore = () => {
-        getContactsByPage(page === null ? 0 : page + 1);
-    };
     const searchKeyword = (v) => {
-        getContactsByPage(page === null ? 0 : page + 1, v);
-        console.log(v);
+        getContactsByPage(v);
     };
 
     useEffect(() => {
-        loadMore();
+        getContactsByPage();
     }, []);
 
     return (

@@ -22,6 +22,7 @@ const Cell = ({ children }) => (
 );
 
 function ContactsList({ contacts }) {
+    console.log(contacts);
     const matches = useMediaQuery((theme) =>
         theme.breakpoints.down(theme.layout.breakPoint),
     );

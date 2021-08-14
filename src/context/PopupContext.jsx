@@ -18,7 +18,7 @@ function PopupProvider({ children }) {
         >
             {children}
             <Popup open={openContactsRegister} close={close}>
-                <ContactsRegistrationForm />
+                <ContactsRegistrationForm success={close} />
             </Popup>
         </PopupContext.Provider>
     );
