@@ -19,6 +19,7 @@ const theme = createTheme({
     },
     layout: {
         maxWidth: 1024,
+        breakPoint: 757,
     },
 });
 

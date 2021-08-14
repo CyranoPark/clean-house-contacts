@@ -4,12 +4,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { menuList } from '../../services/LayoutService';
 import { useContext } from 'react';
 import { PageContext } from '../../context/PageContext';
+import List from '@material-ui/core/List';
 
 const ListItems = () => {
     const { page, changeMenu } = useContext(PageContext);
 
     return (
-        <div>
+        <List>
             {menuList.map(({ Icon, text, name }) => (
                 <ListItem
                     button
@@ -23,7 +24,7 @@ const ListItems = () => {
                     <ListItemText primary={text} />
                 </ListItem>
             ))}
-        </div>
+        </List>
     );
 };
 

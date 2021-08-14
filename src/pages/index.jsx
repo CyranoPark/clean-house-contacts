@@ -6,9 +6,11 @@ import { getContactByMobile, postContacts } from '../api/firebase';
 import ContactsList from '../components/Contacts/List';
 import { Container } from '@material-ui/core';
 import SearchBar from '../components/Contacts/SearchBar';
+import { PopupContext } from '../context/PopupContext';
 
 function Home() {
     const { getContactsByPage, contacts, page } = useContext(ContactsContext);
+    const { open, close } = useContext(PopupContext);
 
     const loadMore = () => {
         getContactsByPage(page === null ? 0 : page + 1);
@@ -24,7 +26,7 @@ function Home() {
 
     return (
         <Container>
-            <SearchBar handleSearch={searchKeyword} />
+            <SearchBar onClickRegister={open} searchKeyword={searchKeyword} />
             <ContactsList contacts={contacts} />
         </Container>
     );

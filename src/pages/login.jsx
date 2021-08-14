@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { signInWithEmailAndPassword } from '../api/firebase';
+import { useForm } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -34,28 +35,16 @@ const useStyles = makeStyles((theme) => ({
 
 function Login() {
     const classes = useStyles();
-
-    const [user, setUser] = useState({
-        email: '',
-        password: '',
-    });
+    const { register, handleSubmit } = useForm();
     const [errorMessage, setErrorMessage] = useState('');
 
-    const handleSubmit = async (user) => {
+    const onSubmit = async (user) => {
         try {
             await signInWithEmailAndPassword(user);
             Router.push('/');
         } catch (e) {
             setErrorMessage('로그인에 실패하였습니다.');
         }
-    };
-    const onChangeForm = (e) => {
-        const userFormData = {
-            ...user,
-            [e.target.name]: e.target.value,
-        };
-        setUser(userFormData);
-        setErrorMessage('');
     };
 
     return (
@@ -69,12 +58,7 @@ function Login() {
                 </Typography>
                 <form
                     className={classes.form}
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleSubmit(user);
-                    }}
-                    onChange={onChangeForm}
-                    noValidate
+                    onSubmit={handleSubmit(onSubmit)}
                 >
                     <TextField
                         variant="outlined"
@@ -86,6 +70,10 @@ function Login() {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        inputProps={{
+                            defaultValue: '',
+                            ...register('email'),
+                        }}
                     />
                     <TextField
                         variant="outlined"
@@ -97,6 +85,10 @@ function Login() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        inputProps={{
+                            defaultValue: '',
+                            ...register('password'),
+                        }}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}

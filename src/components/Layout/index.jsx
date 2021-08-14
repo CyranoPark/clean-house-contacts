@@ -11,12 +11,15 @@ const useStyles = makeStyles(() => ({
     root: {
         display: 'flex',
         height: '100%',
+        minHeight: '100vh',
     },
     container: {
         display: 'flex',
         width: '100%',
         maxWidth: 1024,
         minHeight: '100%',
+        paddingRight: 0,
+        paddingLeft: 0,
     },
     withHeader: {
         paddingTop: 80,

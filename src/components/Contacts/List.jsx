@@ -6,10 +6,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import React from 'react';
+import { useMediaQuery } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     cell: {
-        fontSize: '1.1rem',
+        fontSize: '1.0rem',
+        padding: 10,
     },
 }));
 
@@ -20,14 +22,21 @@ const Cell = ({ children }) => (
 );
 
 function ContactsList({ contacts }) {
+    const matches = useMediaQuery((theme) =>
+        theme.breakpoints.down(theme.layout.breakPoint),
+    );
     return (
         <Table size="medium">
             <TableHead>
                 <TableRow>
                     <Cell>이름</Cell>
                     <Cell>전화번호</Cell>
-                    <Cell>그룹</Cell>
-                    <Cell>기타</Cell>
+                    {!matches && (
+                        <>
+                            <Cell>그룹</Cell>
+                            <Cell>기타</Cell>
+                        </>
+                    )}
                     <Cell></Cell>
                 </TableRow>
             </TableHead>
@@ -36,10 +45,17 @@ function ContactsList({ contacts }) {
                     <TableRow key={contact.id}>
                         <Cell>{contact.name}</Cell>
                         <Cell>{contact.mobile}</Cell>
-                        <Cell>{contact.group}</Cell>
-                        <Cell>{contact.memo}</Cell>
+                        {!matches && (
+                            <>
+                                <Cell>{contact.group}</Cell>
+                                <Cell>{contact.memo}</Cell>
+                            </>
+                        )}
                         <Cell>
-                            <Button size="large" color="primary">
+                            <Button
+                                size={matches ? 'small' : 'large'}
+                                color="primary"
+                            >
                                 문자발송
                             </Button>
                         </Cell>
