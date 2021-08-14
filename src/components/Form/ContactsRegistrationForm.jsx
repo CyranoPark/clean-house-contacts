@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { postContact } from '../../api/firebase';
 import { PageContext } from '../../context/PageContext';
 import { ContactsContext } from '../../context/ContactsContext';
+import { ButtonGroup } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -17,12 +18,22 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    deleteButton: {
+        backgroundColor: theme.palette.error.main,
+        margin: theme.spacing(3, 0, 2),
+    },
 }));
 
-function ContactsRegistrationForm({ contacts, success = () => {} }) {
+function ContactsRegistrationForm({ success = () => {} }) {
     const classes = useStyles();
     const { openToastMessage } = useContext(PageContext);
-    const { getContactsByPage } = useContext(ContactsContext);
+    const {
+        getContactsByPage,
+        selectedContact,
+        initContact,
+        deleteContactById,
+        modifyContact,
+    } = useContext(ContactsContext);
     const [errorMessage, setErrorMessage] = useState('');
     const {
         register,
@@ -35,15 +46,22 @@ function ContactsRegistrationForm({ contacts, success = () => {} }) {
         group = '',
         memo = '',
         phone = '',
-    } = contacts || {};
+    } = selectedContact || {};
 
     const onSubmit = async (v) => {
         try {
             setErrorMessage('');
-            const contact = await postContact({
+            const newContact = {
                 ...v,
                 created_at: new Date().toISOString(),
-            });
+            };
+
+            if (selectedContact) {
+                await onClickUpdate(newContact);
+                return;
+            }
+
+            const contact = await postContact(newContact);
             openToastMessage(`${contact.name}님의 연락처가 등록되었습니다.`);
             getContactsByPage(contact.mobile);
             success();
@@ -54,9 +72,43 @@ function ContactsRegistrationForm({ contacts, success = () => {} }) {
         }
     };
 
+    const onClickUpdate = async (newContact) => {
+        try {
+            setErrorMessage('');
+            await modifyContact(selectedContact.id, newContact);
+            openToastMessage(
+                `${selectedContact.name}님의 연락처가 수정되었습니다.`,
+            );
+            initContact();
+            success();
+        } catch (e) {
+            console.log(e);
+            setErrorMessage(
+                '문제가 발생했습니다. 새로고침 후 다시 시도해주세요',
+            );
+        }
+    };
+    const onClickDelete = async () => {
+        try {
+            setErrorMessage('');
+            await deleteContactById(selectedContact.id);
+            openToastMessage(
+                `${selectedContact.name}님의 연락처가 삭제되었습니다.`,
+            );
+            initContact();
+            success();
+        } catch (e) {
+            setErrorMessage(
+                '문제가 발생했습니다. 새로고침 후 다시 시도해주세요',
+            );
+        }
+    };
+
     return (
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-            <Typography component="h2">연락처 등록</Typography>
+            <Typography component="h2">
+                연락처 {selectedContact ? '수정' : '등록'}
+            </Typography>
             <TextField
                 variant="outlined"
                 margin="normal"
@@ -146,15 +198,40 @@ function ContactsRegistrationForm({ contacts, success = () => {} }) {
                     ...register('memo'),
                 }}
             />
-            <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-            >
-                등록
-            </Button>
+
+            {selectedContact ? (
+                <ButtonGroup fullWidth>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                    >
+                        수정
+                    </Button>
+                    <Button
+                        type="button"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.deleteButton}
+                        onClick={onClickDelete}
+                    >
+                        삭제
+                    </Button>
+                </ButtonGroup>
+            ) : (
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                >
+                    등록
+                </Button>
+            )}
             <Typography component="div" color="error">
                 {errorMessage}
             </Typography>

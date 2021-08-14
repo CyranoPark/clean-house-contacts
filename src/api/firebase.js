@@ -36,7 +36,6 @@ export const authUser = (callback) => {
 export const getContactByMobile = (mobile) => {
     const dbRef = firebase.database().ref('contacts');
     dbRef.orderByChild('mobile').equalTo(mobile).limitToFirst(10);
-    // .startAt(mobile).endAt(mobile).limitToFirst(10);
     return new Promise((resolve, reject) => {
         dbRef
             .get()
@@ -80,7 +79,10 @@ export const getContactsByMobile = (mobile = '') => {
             .where('mobile', '==', mobile)
             .limit(SIZE);
     } else {
-        ref = db.collection('contacts').orderBy('created_at').limit(SIZE);
+        ref = db
+            .collection('contacts')
+            .orderBy('created_at', 'desc')
+            .limit(SIZE);
     }
 
     return ref.get().then((documentSnapshots) => {
@@ -102,6 +104,37 @@ export const postContact = (contact) => {
                 docRef.get().then((doc) => {
                     res(doc.data());
                 });
+            })
+            .catch((error) => {
+                rej(error);
+            });
+    });
+};
+
+export const updateContact = (id, contact) => {
+    const db = firebase.firestore();
+    console.log(contact);
+    return new Promise((res, rej) => {
+        db.collection('contacts')
+            .doc(id)
+            .set(contact)
+            .then(() => {
+                res();
+            })
+            .catch((error) => {
+                rej(error);
+            });
+    });
+};
+
+export const deleteContact = (id) => {
+    const db = firebase.firestore();
+    return new Promise((res, rej) => {
+        db.collection('contacts')
+            .doc(id)
+            .delete()
+            .then(() => {
+                res();
             })
             .catch((error) => {
                 rej(error);
