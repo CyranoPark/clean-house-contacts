@@ -50,7 +50,6 @@ function SmsForm({ success }) {
         console.log(values);
         try {
             const { data } = await axios.post('/api/message', values);
-            console.log(data);
             await postMessageHistory({
                 values,
                 ...data,
@@ -58,11 +57,12 @@ function SmsForm({ success }) {
             openToastMessage(
                 `${selectedContact.name}님에게 문자 전송을 완료하였습니다.`,
             );
+            success();
         } catch (e) {
-            console.log(e);
             setErrorMessage(
                 '문제가 발생했습니다. 새로고침 후 다시 시도해주세요',
             );
+            success();
         }
     };
 
