@@ -170,6 +170,7 @@ function SmsForm({ success }) {
             <SimplePopup
                 open={!!openSubmitDialog}
                 handleClose={() => setOpenSubmitDialog(null)}
+                handleCancel={() => setSubmitting(false)}
                 handleAgree={sendMessage}
                 title="정말 발송하시겠습니까?"
                 description="발송 후 취소할 수 없습니다."
