@@ -39,6 +39,7 @@ function SmsForm({ success }) {
     } = useForm();
     const [errorMessage, setErrorMessage] = useState('');
     const [contentSize, setContentSize] = useState(0);
+    const [submitting, setSubmitting] = useState(false);
     const contentField = register('content');
 
     const onSubmit = async (v) => {
@@ -47,7 +48,7 @@ function SmsForm({ success }) {
             from: removeDashInString(from),
             content: v.content,
         };
-        console.log(values);
+        setSubmitting(true);
         try {
             const { data } = await axios.post('/api/message', values);
             await postMessageHistory({
@@ -57,11 +58,13 @@ function SmsForm({ success }) {
             openToastMessage(
                 `${selectedContact.name}님에게 문자 전송을 완료하였습니다.`,
             );
+            setSubmitting(false);
             success();
         } catch (e) {
             setErrorMessage(
                 '문제가 발생했습니다. 새로고침 후 다시 시도해주세요',
             );
+            setSubmitting(false);
             success();
         }
     };
@@ -141,6 +144,7 @@ function SmsForm({ success }) {
             <span>{contentSize}/80 Byte</span>
 
             <Button
+                disabled={submitting}
                 type="submit"
                 fullWidth
                 variant="contained"
