@@ -141,3 +141,19 @@ export const deleteContact = (id) => {
             });
     });
 };
+
+export const postMessageHistory = (history) => {
+    const db = firebase.firestore();
+    return new Promise((res, rej) => {
+        db.collection('history')
+            .add(history)
+            .then((docRef) => {
+                docRef.get().then((doc) => {
+                    res(doc.data());
+                });
+            })
+            .catch((error) => {
+                rej(error);
+            });
+    });
+};

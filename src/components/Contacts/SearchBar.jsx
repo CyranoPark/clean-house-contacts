@@ -45,7 +45,6 @@ function SearchBar({ onClickRegister, searchKeyword }) {
             </Box>
             <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                 <TextField
-                    required
                     className={classes.field}
                     size={matches ? 'small' : 'medium'}
                     variant={matches ? 'standard' : 'outlined'}

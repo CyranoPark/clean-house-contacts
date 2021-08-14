@@ -1,79 +1,70 @@
-const app = require('express')();
 const axios = require('axios');
 const CryptoJS = require('crypto-js');
 
-app.post('/api/message', smsApi);
-app.get('/api/message', getMessageHistory);
+export default async function handler(req, res) {
+    let responseData = null;
 
-module.exports = app;
+    try {
+        if (req.method === 'POST') {
+            responseData = await smsApi(req.body);
+        }
+        if (req.method === 'GET') {
+            responseData = await getMessageHistory(req.query);
+        }
 
-async function smsApi(req, res, next) {
-    const { from, to, content } = req.body;
+        res.end(JSON.stringify(responseData));
+    } catch (e) {
+        res.end(e);
+    }
+}
+
+async function smsApi(body) {
+    const { from, to, content } = body;
 
     const uri = process.env.SMS_SERVICE_ID;
     const url = `${process.env.SMS_API_URL}/services/${uri}/messages`;
     const url2 = `/sms/v2/services/${uri}/messages`;
-    const headers = getAuthHeaders(url2);
-
-    try {
-        const data = await axios
-            .post(
-                url,
-                {
-                    type: 'SMS',
-                    countryCode: '82',
-                    from,
-                    content,
-                    messages: [
-                        {
-                            to: `${to}`,
-                        },
-                    ],
-                },
-                {
-                    headers,
-                },
-            )
-            .then((res) => {
-                return res.data;
-            })
-            .catch((err) => {
-                return err;
-            });
-        res.json(data);
-    } catch (e) {
-        next(e);
-    }
+    const headers = getAuthHeaders(url2, 'POST');
+    return await axios
+        .post(
+            url,
+            {
+                type: 'SMS',
+                from,
+                content,
+                messages: [
+                    {
+                        to: `${to}`,
+                    },
+                ],
+            },
+            {
+                headers,
+            },
+        )
+        .then((res) => {
+            return res.data;
+        });
 }
 
-async function getMessageHistory(req, res, next) {
-    const { requestId } = req.query;
+async function getMessageHistory(query) {
+    const { requestId } = query;
 
     const uri = process.env.SMS_SERVICE_ID;
     const url = `${process.env.SMS_API_URL}/services/${uri}/messages?requestId=${requestId}`;
     const url2 = `/sms/v2/services/${uri}/messages?requestId=${requestId}`;
-    const headers = getAuthHeaders(url2);
+    const headers = getAuthHeaders(url2, 'GET');
 
-    try {
-        const data = await axios
-            .get(url, { headers })
-            .then((res) => {
-                return res.data;
-            })
-            .catch((err) => {
-                return err;
-            });
-        res.json(data);
-    } catch (e) {
-        next(e);
-    }
+    return await axios.get(url, { headers }).then((res) => {
+        return res.data;
+    });
 }
 
-function getAuthHeaders(url) {
+function getAuthHeaders(url, method) {
     const date = Date.now().toString();
     const accessKey = process.env.SMS_ACCESS_KEY;
     const secretKey = process.env.SMS_SECRET_KEY;
-    const signature = makeSignature(url, 'GET', date, accessKey, secretKey);
+    const signature = makeSignature(url, method, date, accessKey, secretKey);
     return {
         'Content-type': 'application/json; charset=utf-8',
         'x-ncp-iam-access-key': accessKey,

@@ -51,30 +51,30 @@ function Header({ title }) {
                     >
                         {title}
                     </Typography>
-                    {matches && (
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={() => setOpen(!open)}
-                        >
-                            {open ? <CloseIcon /> : <MenuIcon />}
-                        </IconButton>
-                    )}
+                    {/*{matches && (*/}
+                    {/*    <IconButton*/}
+                    {/*        edge="start"*/}
+                    {/*        color="inherit"*/}
+                    {/*        aria-label="open drawer"*/}
+                    {/*        onClick={() => setOpen(!open)}*/}
+                    {/*    >*/}
+                    {/*        {open ? <CloseIcon /> : <MenuIcon />}*/}
+                    {/*    </IconButton>*/}
+                    {/*)}*/}
                 </Toolbar>
-                {matches && open && <ListItems />}
+                {/*{matches && open && <ListItems />}*/}
             </AppBar>
-            {!matches && (
-                <Drawer
-                    open
-                    variant="persistent"
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                >
-                    <ListItems />
-                </Drawer>
-            )}
+            {/*{!matches && (*/}
+            {/*    <Drawer*/}
+            {/*        open*/}
+            {/*        variant="persistent"*/}
+            {/*        classes={{*/}
+            {/*            paper: classes.drawerPaper,*/}
+            {/*        }}*/}
+            {/*    >*/}
+            {/*        <ListItems />*/}
+            {/*    </Drawer>*/}
+            {/*)}*/}
         </>
     );
 }

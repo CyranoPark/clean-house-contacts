@@ -7,7 +7,8 @@ import SearchBar from '../components/Contacts/SearchBar';
 import { PopupContext } from '../context/PopupContext';
 
 function Home() {
-    const { getContactsByPage, contacts } = useContext(ContactsContext);
+    const { getContactsByPage, contacts, initContact } =
+        useContext(ContactsContext);
     const { open } = useContext(PopupContext);
 
     const searchKeyword = (v) => {
@@ -20,7 +21,13 @@ function Home() {
 
     return (
         <Container>
-            <SearchBar onClickRegister={open} searchKeyword={searchKeyword} />
+            <SearchBar
+                onClickRegister={() => {
+                    initContact();
+                    open();
+                }}
+                searchKeyword={searchKeyword}
+            />
             <ContactsList contacts={contacts} />
         </Container>
     );
