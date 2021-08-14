@@ -10,6 +10,7 @@ import axios from 'axios';
 import { ContactsContext } from '../../context/ContactsContext';
 import { byteCount, removeDashInString } from '../../services/ContactsService';
 import { PageContext } from '../../context/PageContext';
+import SimplePopup from '../Popup/SimplePopup';
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -40,15 +41,11 @@ function SmsForm({ success }) {
     const [errorMessage, setErrorMessage] = useState('');
     const [contentSize, setContentSize] = useState(0);
     const [submitting, setSubmitting] = useState(false);
+    const [openSubmitDialog, setOpenSubmitDialog] = useState(null);
     const contentField = register('content');
 
-    const onSubmit = async (v) => {
-        const values = {
-            to: removeDashInString(v.to),
-            from: removeDashInString(from),
-            content: v.content,
-        };
-        setSubmitting(true);
+    const sendMessage = async () => {
+        const values = openSubmitDialog;
         try {
             const { data } = await axios.post('/api/message', values);
             await postMessageHistory({
@@ -69,95 +66,115 @@ function SmsForm({ success }) {
         }
     };
 
+    const onSubmit = async (v) => {
+        const values = {
+            to: removeDashInString(v.to),
+            from: removeDashInString(from),
+            content: v.content,
+        };
+        setOpenSubmitDialog(values);
+        setSubmitting(true);
+    };
+
     return (
-        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-            <Typography component="h2">메시지 보내기</Typography>
-            <TextField
-                disabled
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="from"
-                label="핸드폰 번호"
-                name="from"
-                autoFocus
-                autoComplete="off"
-                inputProps={{
-                    defaultValue: process.env.NEXT_PUBLIC_SMS_CALLING_NUMBER,
-                    ...register('from', {
-                        pattern: /^[0-9]{3}[-]+[0-9]{4}[-]+[0-9]{4}$/i,
-                        required: true,
-                    }),
-                }}
-            />
-            {errors.name && errors.name.type === 'required' && (
-                <Typography component="div" color="error">
-                    필수 작성 항목입니다.
-                </Typography>
-            )}
-            <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="to"
-                label="핸드폰 번호"
-                name="to"
-                autoFocus
-                autoComplete="off"
-                inputProps={{
-                    defaultValue: selectedContact.mobile || '',
-                    ...register('to', {
-                        pattern: /^[0-9]{3}[-]+[0-9]{4}[-]+[0-9]{4}$/i,
-                        required: true,
-                    }),
-                }}
-            />
-            {errors.mobile && errors.mobile.type === 'pattern' && (
-                <Typography component="div" color="error">
-                    전화번호 형식을 맞춰주세요 (ex. 010-0000-0000)
-                </Typography>
-            )}
-            {errors.mobile && errors.mobile.type === 'required' && (
-                <Typography component="div" color="error">
-                    필수 작성 항목입니다.
-                </Typography>
-            )}
-            <TextField
-                multiline={true}
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="content"
-                label="문자 내용"
-                name="content"
-                autoFocus
-                autoComplete="off"
-                inputProps={{
-                    defaultValue: '',
-                    ...contentField,
-                    onChange: (e) => {
-                        setContentSize(byteCount(e.target.value));
-                        contentField.onChange(e);
-                    },
-                }}
-            />
-            <span>{contentSize}/80 Byte</span>
+        <>
+            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+                <Typography component="h2">메시지 보내기</Typography>
+                <TextField
+                    disabled
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="from"
+                    label="핸드폰 번호"
+                    name="from"
+                    autoFocus
+                    autoComplete="off"
+                    inputProps={{
+                        defaultValue:
+                            process.env.NEXT_PUBLIC_SMS_CALLING_NUMBER,
+                        ...register('from', {
+                            pattern: /^[0-9]{3}[-]+[0-9]{4}[-]+[0-9]{4}$/i,
+                            required: true,
+                        }),
+                    }}
+                />
+                {errors.name && errors.name.type === 'required' && (
+                    <Typography component="div" color="error">
+                        필수 작성 항목입니다.
+                    </Typography>
+                )}
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="to"
+                    label="핸드폰 번호"
+                    name="to"
+                    autoFocus
+                    autoComplete="off"
+                    inputProps={{
+                        defaultValue: selectedContact.mobile || '',
+                        ...register('to', {
+                            pattern: /^[0-9]{3}[-]+[0-9]{4}[-]+[0-9]{4}$/i,
+                            required: true,
+                        }),
+                    }}
+                />
+                {errors.mobile && errors.mobile.type === 'pattern' && (
+                    <Typography component="div" color="error">
+                        전화번호 형식을 맞춰주세요 (ex. 010-0000-0000)
+                    </Typography>
+                )}
+                {errors.mobile && errors.mobile.type === 'required' && (
+                    <Typography component="div" color="error">
+                        필수 작성 항목입니다.
+                    </Typography>
+                )}
+                <TextField
+                    multiline={true}
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="content"
+                    label="문자 내용"
+                    name="content"
+                    autoFocus
+                    autoComplete="off"
+                    inputProps={{
+                        defaultValue: '',
+                        ...contentField,
+                        onChange: (e) => {
+                            setContentSize(byteCount(e.target.value));
+                            contentField.onChange(e);
+                        },
+                    }}
+                />
+                <span>{contentSize}/80 Byte</span>
 
-            <Button
-                disabled={submitting}
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-            >
-                보내기
-            </Button>
+                <Button
+                    disabled={submitting}
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                >
+                    보내기
+                </Button>
 
-            <Typography component="div" color="error">
-                {errorMessage}
-            </Typography>
-        </form>
+                <Typography component="div" color="error">
+                    {errorMessage}
+                </Typography>
+            </form>
+            <SimplePopup
+                open={!!openSubmitDialog}
+                handleClose={() => setOpenSubmitDialog(null)}
+                handleAgree={sendMessage}
+                title="정말 발송하시겠습니까?"
+                description="발송 후 취소할 수 없습니다."
+            />
+        </>
     );
 }
 
